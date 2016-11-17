@@ -10,3 +10,5 @@ My stupid boss still prefers SVN.
 
 
 Create a new branch to git.
+
+Create a new branch feature1 is quick and SIMPLE!
