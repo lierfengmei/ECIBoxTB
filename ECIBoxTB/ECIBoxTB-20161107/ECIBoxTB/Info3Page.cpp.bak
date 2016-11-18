@@ -1,0 +1,107 @@
+// Info3Page.cpp : implementation file
+//
+
+#include "stdafx.h"
+#include "ECIBoxTB.h"
+#include "Info3Page.h"
+#include "afxdialogex.h"
+
+/*
+#ifdef UNICODE
+#define GetPrivateProfileString GetPrivateProfileStringW
+#else 
+#define GetPrivateProfileString GetPrivateProfileStringA
+#endif*/
+// CInfo3Page dialog
+
+IMPLEMENT_DYNAMIC(CInfo3Page, CDialogEx)
+
+CInfo3Page::CInfo3Page(CWnd* pParent /*=NULL*/)
+	: CDialogEx(CInfo3Page::IDD, pParent)
+//	, m_radioBox1(0)
+	, m_page3radio1(0)
+	, m_page3radio2(0)
+	, m_page3radio3(0)
+
+{
+
+}
+
+CInfo3Page::~CInfo3Page()
+{
+}
+
+void CInfo3Page::DoDataExchange(CDataExchange* pDX)
+{
+	CDialogEx::DoDataExchange(pDX);
+	//	DDX_Radio(pDX, IDC_YES_RADIO, m_radioBox1);
+//	DDX_Control(pDX, IDC_YES_RADIO, m_radioBox);
+	DDX_Radio(pDX, IDC_YES_RADIO, m_page3radio1);
+	DDX_Radio(pDX, IDC_YES_RADIO2, m_page3radio2);
+	DDX_Radio(pDX, IDC_YES_RADIO3, m_page3radio3);
+}
+
+
+BEGIN_MESSAGE_MAP(CInfo3Page, CDialogEx)
+	ON_BN_CLICKED(IDC_PAGE3_PRE_BUTTON, &CInfo3Page::OnBnClickedPage3PreButton)
+	ON_BN_CLICKED(IDC_PAGE3_NEXT_BUTTON, &CInfo3Page::OnBnClickedPage3NextButton)
+END_MESSAGE_MAP()
+
+
+// CInfo3Page message handlers
+
+
+void CInfo3Page::OnBnClickedPage3PreButton()
+{
+	// TODO: Add your control notification handler code here
+	//CDialog::EndDialog( IDC_PAGE3_PRE_BUTTON );
+	CDialog::DestroyWindow();
+	::SendMessage(AfxGetMainWnd()->m_hWnd,WM_INFO3_PRE,WM_INFO3_PRE,0);		//将消息WM_INFO3_PRE传递给父窗口
+}
+
+
+void CInfo3Page::OnBnClickedPage3NextButton()
+{
+	// TODO: Add your control notification handler code here
+	UpdateData(TRUE);						//关闭该页面前将控件中的各数据保存到对应变量
+
+	if(-1 == m_page3radio1)
+	{
+		MessageBox(_T("一定要确认测试台与电源连接哦(*^__^*) "),_T("警告"),0);
+		return;
+	}
+	if(-1 == m_page3radio2)
+	{
+		MessageBox(_T("一定要确认ECI与电源连接哦(*^__^*) "),_T("警告"),0);
+		return;
+	}
+	if(-1 == m_page3radio3)
+	{
+		MessageBox(_T("一定要把拨码开关拨到正确的值哦(*^__^*) "),_T("警告"),0);
+		return;
+	}
+//	CDialog::EndDialog( IDC_PAGE3_NEXT_BUTTON );
+		
+	CDialog::DestroyWindow();
+	::SendMessage(AfxGetMainWnd()->m_hWnd,WM_INFO3_NEXT,WM_INFO3_NEXT,0);		//将消息WM_INFO2_NEXT传递给父窗口
+
+}
+
+
+BOOL CInfo3Page::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+	SetWindowPos(&wndTop,830,100,500,430,SWP_SHOWWINDOW);
+
+// TODO:  Add extra initialization here
+
+//	CheckRadioButton(IDC_YES_RADIO,IDC_NO_RADIO,IDC_NO_RADIO);
+
+	m_page3radio1 = -1;
+	m_page3radio2 = -1;
+	m_page3radio3 = -1;
+	UpdateData(FALSE);
+
+	return TRUE;  // return TRUE unless you set the focus to a control
+	// EXCEPTION: OCX Property Pages should return FALSE
+}

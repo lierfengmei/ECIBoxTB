@@ -1,0 +1,551 @@
+// MainDlg.cpp : implementation file
+//
+
+#include "stdafx.h"
+#include "ECIBoxTB.h"
+#include "MainDlg.h"
+#include "afxdialogex.h"
+
+#include "ControlCAN.h"
+#define DEV_TYPE VCI_USBCAN2
+#define DEV_IND 0
+#pragma comment(lib,"controlcan.lib")
+
+#define ECICOM 0		//与ECI相连的串口
+#define TBCOM  1		//与TEST BENCH测试工装相连的串口
+
+UINT gECIComPortNumber;	//连接ECI串口的计算机对应的串口号
+UINT gTBComPortNumber;	//连接测试工装的计算机对应的串口号
+
+// CMainDlg dialog
+
+IMPLEMENT_DYNAMIC(CMainDlg, CDialogEx)
+
+CMainDlg::CMainDlg(CWnd* pParent /*=NULL*/)
+	: CDialogEx(CMainDlg::IDD, pParent)
+{
+	m_configDlg = NULL;	
+	m_recordDlg = NULL;
+}
+
+CMainDlg::~CMainDlg()
+{
+	//如果非模态对话框存在则删除它
+	if(NULL!=m_configDlg)
+		{
+			delete m_configDlg;
+		}
+}
+
+void CMainDlg::DoDataExchange(CDataExchange* pDX)
+{
+	CDialogEx::DoDataExchange(pDX);
+}
+
+
+BEGIN_MESSAGE_MAP(CMainDlg, CDialogEx)
+	ON_BN_CLICKED(IDC_NORMAL_MODE, &CMainDlg::OnBnClickedNormalMode)
+	ON_BN_CLICKED(IDC_MAINTAIN_MODE, &CMainDlg::OnBnClickedMaintainMode)
+	ON_BN_CLICKED(IDC_INFO, &CMainDlg::OnBnClickedInfo)
+	ON_BN_CLICKED(IDC_COM, &CMainDlg::OnBnClickedCom)
+	ON_BN_CLICKED(IDC_TEST, &CMainDlg::OnBnClickedTest)
+END_MESSAGE_MAP()
+
+
+// CMainDlg message handlers
+
+
+void CMainDlg::SetPic(CWnd *Pic,int nID)	//设置Bitmap对象。
+{
+	CBitmap bitmap;							// CBitmap对象，用于加载位图   
+    HBITMAP hBmp;							// 保存CBitmap加载的位图的句柄
+
+	CStatic *p_Pic = (CStatic*) Pic;
+	bitmap.LoadBitmap(nID);					// 将位图nID加载到bitmap   
+	hBmp = (HBITMAP)bitmap.GetSafeHandle(); // 获取bitmap加载位图的句柄   
+	p_Pic->SetBitmap(hBmp);					// 设置图片控件p_Pic的位图图片为nID 
+}
+
+
+
+BOOL CMainDlg::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+
+	// TODO:  Add extra initialization here
+
+	this->GetFont()->GetLogFont(&logfont);				//设置欢迎词字体大小
+	logfont.lfHeight += logfont.lfHeight;
+	logfont.lfWidth += logfont.lfWidth;
+	m_font.CreateFontIndirect(&logfont);
+	GetDlgItem(IDC_INTRO)->SetFont(&m_font,1);
+
+	logfont.lfHeight = logfont.lfHeight*2/3;			//设置按钮“正常模式”和“返修模式”字体大小
+	m_font.CreateFontIndirect(&logfont);
+	GetDlgItem(IDC_NORMAL_MODE)->SetFont(&m_font,1);
+	GetDlgItem(IDC_MAINTAIN_MODE)->SetFont(&m_font,1);
+
+	GetDlgItem(IDC_INFO)->ShowWindow(false);
+	GetDlgItem(IDC_COM)->ShowWindow(false);
+	GetDlgItem(IDC_TEST)->ShowWindow(false);
+	GetDlgItem(IDC_HELP)->ShowWindow(false);
+
+	GetDlgItem(IDC_STATIC_COM1)->ShowWindow(false);
+	GetDlgItem(IDC_STATIC_COM2)->ShowWindow(false);
+	GetDlgItem(IDC_STATIC_CAN1)->ShowWindow(false);
+	GetDlgItem(IDC_STATIC_CAN2)->ShowWindow(false);
+	GetDlgItem(IDC_STATIC_GB)->ShowWindow(false);
+
+	GetDlgItem(IDC_PIC_COM1)->ShowWindow(false);
+	GetDlgItem(IDC_PIC_COM2)->ShowWindow(false);
+	GetDlgItem(IDC_PIC_CAN1)->ShowWindow(false);
+	GetDlgItem(IDC_PIC_CAN2)->ShowWindow(false);
+
+	this->m_flagIDCBtnComStatus = false;		//"连接串口CAN口按钮"
+	
+	this->m_flagECIComOpen = false;				//串口未打开
+	this->m_flagTBComOpen = false;
+
+	this->m_flagCanConnect = false;				//CAN口未打开
+	this->m_flagCan1Open = false;
+	this->m_flagCan2Open = false;
+	
+	return TRUE;  // return TRUE unless you set the focus to a control
+	// EXCEPTION: OCX Property Pages should return FALSE
+}
+
+
+void CMainDlg::OnBnClickedNormalMode()					//普通模式需要显示的控件
+{
+	// TODO: Add your control notification handler code here
+	GetDlgItem(IDC_INTRO)->ShowWindow(false);
+
+	GetDlgItem(IDC_INFO)->ShowWindow(true);
+	GetDlgItem(IDC_COM)->ShowWindow(true);
+	GetDlgItem(IDC_TEST)->ShowWindow(true);
+	GetDlgItem(IDC_HELP)->ShowWindow(true);
+
+	GetDlgItem(IDC_STATIC_COM1)->ShowWindow(true);
+	GetDlgItem(IDC_STATIC_COM2)->ShowWindow(true);
+	GetDlgItem(IDC_STATIC_CAN1)->ShowWindow(true);
+	GetDlgItem(IDC_STATIC_CAN2)->ShowWindow(true);
+	GetDlgItem(IDC_STATIC_GB)->ShowWindow(true);
+
+	GetDlgItem(IDC_PIC_COM1)->ShowWindow(true);
+	GetDlgItem(IDC_PIC_COM2)->ShowWindow(true);
+	GetDlgItem(IDC_PIC_CAN1)->ShowWindow(true);
+	GetDlgItem(IDC_PIC_CAN2)->ShowWindow(true);
+}
+
+
+void CMainDlg::OnBnClickedMaintainMode()				//返修模式需要显示的控件
+{
+	// TODO: Add your control notification handler code here
+	GetDlgItem(IDC_INFO)->ShowWindow(false);
+	GetDlgItem(IDC_COM)->ShowWindow(false);
+	GetDlgItem(IDC_TEST)->ShowWindow(false);
+	GetDlgItem(IDC_HELP)->ShowWindow(false);
+
+	GetDlgItem(IDC_PIC_COM1)->ShowWindow(true);
+	GetDlgItem(IDC_PIC_COM2)->ShowWindow(true);
+	GetDlgItem(IDC_PIC_CAN1)->ShowWindow(true);
+	GetDlgItem(IDC_PIC_CAN2)->ShowWindow(true);
+}
+
+
+void CMainDlg::OnBnClickedInfo()							//信息配置
+{
+	// TODO: Add your control notification handler code here
+/*	//弹出非模态对话框
+	if(NULL == m_configDlg)									//如果对话框还没有创建
+	{
+		m_configDlg = new CConfigDlg();
+		m_configDlg->Create(IDD_CONFIG_DIALOG,this);
+	}
+	// 显示非模态对话框  
+	m_configDlg->ShowWindow(SW_SHOW);  
+  // 将各控件中的数据保存到相应的变量   
+  UpdateData(TRUE); 
+  */
+	//弹出模态对话框
+	INT_PTR nRes;
+	CConfigDlg configDlg;
+
+	nRes = configDlg.DoModal();
+
+	if(IDCANCEL == nRes)
+		return;
+	UpdateData(TRUE);
+}
+
+
+void CMainDlg::OnBnClickedCom()					//一键连接所有的串口的CAN口，指示灯会显示连接状态
+{
+	// TODO: Add your control notification handler code here
+
+	if(m_flagIDCBtnComStatus==false)			//连接各类串口
+	{
+		if(!m_flagECIComOpen)
+		{
+			OpenCom(ECICOM);					//打开与ECIBox连接的串口；
+		}
+		if(!m_flagTBComOpen)
+		{
+			OpenCom(TBCOM);						//打开与测试工装连接串口；
+		}
+		if((!m_flagCan1Open)||(!m_flagCan2Open))
+		{
+			OpenCanDevice();					//打开与ECIBox连接的CAN口				
+			connectCanNum(0);					//打开CAN口的通道1
+			connectCanNum(1);					//打开CAN口的通道2
+		}
+		if(m_flagCan1Open&&m_flagCan2Open&&m_flagECIComOpen&&m_flagTBComOpen)
+		{
+			this->SetDlgItemText(IDC_COM,"断开串口CAN口");
+			this->m_flagIDCBtnComStatus = true;
+		}
+	}
+	else										//断开各类串口
+	{
+		CloseCom(ECICOM);						//关闭与ECIBox连接的串口
+		CloseCom(TBCOM);						//关闭与测试工装连接的串口
+		CloseCanDevice();						//关闭与ECIBox连接的CAN口
+		this->SetDlgItemText(IDC_COM,"连接串口CAN口");
+		this->m_flagIDCBtnComStatus = false;
+	}
+}
+
+
+
+//-------------------------串口处理函数---------------------------------------
+
+//todo 自动识别串口号 ECI：RS232接口的连接参数为：9600波特率，8位数据位，1位停止位，无校验，无流控制。 是否改成不可调？
+//todo 4769D20写的停止位是2
+
+//todo:两个串口的停止位和波特率是否一模一样？不是的话还得继续修改。
+
+bool CMainDlg::OpenCom(UINT i)		//打开第i个串口，其中i=ECICOM或者TBCOM。当i=ECICOM时，指的是与ECIBox连接的串口；当i=TBCOM时，指的是与测试工装连接串口
+{
+	BOOL bComSuccess = FALSE;			//COM1打开成功
+	UINT portnr =0;						//UINT型串口号
+	UINT com_baudrate = 0;
+	char com_parity = 'N';
+	UINT com_databits = 0;
+	UINT com_stopbits = 0;
+	UINT com_writeBufferSize = 0;
+	
+	CString iniGroupNumber;
+
+	
+
+	if((i!=ECICOM)&&(i!=TBCOM))
+	{
+		MessageBox("试图打开未定义的串口号，请打开与ECI连接的串口或者与测试工装连接的串口！\n","警告");
+		return false;
+	}
+
+	if((i==ECICOM)&&((this->m_flagECIComOpen)==true))
+	{
+		MessageBox("连接ECI的串口已经打开！","提示");
+		return true;
+	}
+
+	if((i==TBCOM)&&((this->m_flagTBComOpen)==true))
+	{
+		MessageBox("连接ECI的串口已经打开！","提示");
+		return true;
+	}
+
+	if (i==ECICOM)		iniGroupNumber = _T("Group1 Com Data");
+	else if(i==TBCOM)	iniGroupNumber = _T("Group2 Com Data");
+
+	CString strTemp;
+	while(!bComSuccess)			//除非COM1都打开了，否则就一直处理
+	{
+	::GetPrivateProfileString(iniGroupNumber,_T("Com"),_T(""),strTemp.GetBuffer(10),10,_T(".//ECIBoxTestBench.ini"));//获得第一个串口的串口号
+	if(strTemp!=_T(""))
+	{
+		strTemp.ReleaseBuffer();
+		strTemp = strTemp.Mid(3);			//去掉COM 3个字母
+		portnr = atoi(strTemp);				//转换为UINT型数字
+	}
+	else portnr = -1;
+	if (i==ECICOM)	gECIComPortNumber = portnr;
+	if (i==TBCOM)	gTBComPortNumber = portnr;
+
+	//从.ini起始文件中获取波特率、数据位、停止位、校验位等信息
+	::GetPrivateProfileString(iniGroupNumber,_T("Baud Rate"),_T("9600"),strTemp.GetBuffer(10),10,_T(".//ECIBoxTestBench.ini"));
+	strTemp.ReleaseBuffer();
+	com_baudrate = atoi(strTemp);										//获得波特率一个
+
+	::GetPrivateProfileString(iniGroupNumber,_T("Data Bits"),_T("8"),strTemp.GetBuffer(10),10,_T(".//ECIBoxTestBench.ini"));
+	strTemp.ReleaseBuffer();
+	com_databits = atoi(strTemp);										//获得数据位
+
+	::GetPrivateProfileString(iniGroupNumber,_T("Stop Bits"),_T("1"),strTemp.GetBuffer(10),10,_T(".//ECIBoxTestBench.ini"));
+	strTemp.ReleaseBuffer();
+//	if(strTemp=="2")			com_stopbits = 2;
+//	else if(strTemp == "1")		com_stopbits = 1;
+//	else if(strTemp == "1.5")	com_stopbits = 
+
+	com_stopbits = atoi(strTemp);										//获得停止位
+	//todo这个地方需注意一下，有的1 1.5 2 对应数字为 0 1 2
+	
+	::GetPrivateProfileString(iniGroupNumber,_T("Buffer"),_T("512"),strTemp.GetBuffer(10),10,_T(".//ECIBoxTestBench.ini"));
+	strTemp.ReleaseBuffer();
+	com_writeBufferSize = atoi(strTemp);								//获得缓存大小
+
+	::GetPrivateProfileString(iniGroupNumber,_T("Parity"),_T(""),strTemp.GetBuffer(10),10,_T(".//ECIBoxTestBench.ini"));
+	strTemp.ReleaseBuffer();
+	 if(strTemp=="Even") com_parity = 'E';
+	else if(strTemp=="Odd") com_parity = 'O';
+	else com_parity = 'N';							//获得极性
+
+	//如果没有获得串口号,则弹出对话框表示需要配置串口，再弹出配置对话框
+	if(portnr==-1)			
+	{
+		 CString str;
+		 str = _T("与ECIBox连接的串口尚未配置，请配置串口！");
+		 AfxMessageBox(str);
+		 //弹出配置窗口,以便进行串口信息配置！
+		 OnBnClickedInfo();
+		 
+	}
+	
+	else
+	{
+		if(m_ComPort[i].InitPort(this ,portnr,com_baudrate,com_parity,com_databits,com_stopbits,EV_RXFLAG|EV_RXCHAR,com_writeBufferSize))//初始化成功
+		{
+			 m_ComPort[i].StartMonitoring();                       //启动串口监视线程
+			// CString str;
+			 if(i==ECICOM)
+			 {
+				// str.Format(_T("COM%d打开成功！该串口与ECIBox连接！"),portnr);
+				 this->m_flagECIComOpen = true;
+				 this->SetPic(GetDlgItem(IDC_PIC_COM1),IDB_OK);
+				 MessageBox("连接ECI的串口打开成功！","提示");
+
+			 }
+			 if(i==TBCOM)
+			 {
+				 // str.Format(_T("COM%d打开成功！该串口与测试工装连接！"),portnr);
+				  this->m_flagTBComOpen = true;
+				  this->SetPic(GetDlgItem(IDC_PIC_COM2),IDB_OK);
+				  MessageBox("连接测试工装的串口打开成功！","提示");
+			 }
+			 bComSuccess = TRUE;
+			// AfxMessageBox(str); 
+			// m_showList.AddString(str); //todo:2016年5月17日注释掉，其实应该复原的！
+			 //在编辑框中显示
+			// str.Format(_T("portnr=%d,com_baudrate=%d,com_parity=%c,com1_databits=%d,com_stopbits=%d,com_writeBufferSize=%d"),portnr,com_baudrate,com_parity,com_databits,com_stopbits,com_writeBufferSize);
+			//AfxMessageBox(str);
+			// m_showList.AddString(str);  //todo:2016年5月17日注释掉，其实应该复原的！
+			 //m_showList.SetCurSel(m_showList.GetCount()-1);//todo:2016年5月17日注释掉，其实应该复原的！
+		}
+		else                                                                                                                                                                                                                                                                                          //初始化失败
+		{
+			 CString str;
+			 str.Format( _T("COM%d没有发现，或被其他设备占用！COM%d 打开失败！该串口应该与ECIBox连接！") ,portnr,portnr);
+			 AfxMessageBox(str);
+			 //弹出配置窗口,以便重新进行串口信息配置！
+			 OnBnClickedInfo();
+		}
+	}
+}
+HANDLE handle;
+handle=CreateFile(_T(".//测试结果.html"),GENERIC_WRITE,0,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
+if(INVALID_HANDLE_VALUE!= handle ) 
+{
+	DWORD Num; 
+	CString str;
+	str = _T("该串口被打开啦！");
+	::WriteFile(handle,str,strlen(str),&Num,NULL);
+	::CloseHandle(handle); 
+}
+//todo:2016年5月17日注释掉，其实应该复原的！
+//if(i==0)	
+//{
+//	flagCom1ReceiveStatus=0;	//表示刚打开的时候,Com1刚开始接收数据
+//	Com1ReceiveString=_T("");	//初始化接收的string
+//	m_strRXDataCom1 = _T("");	
+//}
+
+}
+
+bool CMainDlg::CloseCom(UINT i)			//关闭串口
+{
+	m_ComPort[i].StopMonitoring();		//停止监测线程函数
+	m_ComPort[i].ClosePort();			//关闭串口函数
+	if(i==ECICOM)	
+	{
+		m_flagECIComOpen = false;
+		this->SetPic(GetDlgItem(IDC_PIC_COM1),IDB_FALSE);
+		MessageBox("连接ECI的串口关闭！","提示");
+	}
+	if(i==TBCOM)	
+	{
+		m_flagTBComOpen = false;
+		this->SetPic(GetDlgItem(IDC_PIC_COM2),IDB_FALSE);
+		MessageBox("连接测试工装的串口关闭！","提示");
+	}
+	return true;
+}
+
+
+
+//-----------------------CAN 口处理函数---------------------------------------
+
+
+void CMainDlg::OpenCanDevice(void)		//打开CAN设备
+{
+	if(m_flagCanConnect == true)		//如果设备已经连接上了
+	{
+		MessageBox(_T("CANUSBII设备已经打开！"),_T("提示"),MB_OK);
+	//	m_showList.AddString("CANUSBII设备已经打开！");
+	//	m_showList.SetCurSel(m_showList.GetCount()-1);
+		return;
+	}
+	if(m_flagCanConnect == false)
+	{
+		//“连接设备”
+		if(VCI_OpenDevice(DEV_TYPE,DEV_IND,0)!=STATUS_OK)		//打开失败
+		{
+			MessageBox(_T("打开CANUSBII设备失败！\n请检查硬件设备然后再点击确定。"),_T("警告"),MB_OK|MB_ICONQUESTION);
+		}
+		else
+		{
+			m_flagCanConnect = true;							//设备已经连接
+			MessageBox(_T("打开CANUSBII设备成功！"),_T("提示"),MB_OK);
+			return;
+		}
+	}	
+	//	m_showList.AddString("打开CANUSBII设备成功！");
+	//	m_showList.SetCurSel(m_showList.GetCount()-1);
+}
+
+
+void CMainDlg::CloseCanDevice(void)
+{
+	if((m_flagCanConnect==true)&&(VCI_CloseDevice(DEV_TYPE,DEV_IND)!=STATUS_OK))	//关闭失败
+	{
+		MessageBox(_T("关闭CANUSBII设备失败！"),_T("警告"),MB_OK|MB_ICONQUESTION);
+		return;
+	}
+	MessageBox(_T("CANUSBII设备关闭！"),_T("通知"),MB_OK|MB_ICONQUESTION);
+//	m_showList.AddString("CANUSBII设备关闭！");
+//	m_showList.SetCurSel(m_showList.GetCount()-1);
+	m_flagCanConnect = false;		//设备已经关闭
+	m_flagCan1Open = false;
+	m_flagCan2Open = false;
+	this->SetPic(GetDlgItem(IDC_PIC_CAN1),IDB_FALSE);
+	this->SetPic(GetDlgItem(IDC_PIC_CAN2),IDB_FALSE);
+}
+
+void CMainDlg::connectCanNum(UINT num)	//num=1表示打开第一个can口，num=2表示打开第2个can口
+{
+		//定义初始化CAN的数据类型
+	VCI_INIT_CONFIG init_config;
+	init_config.AccCode =0x8000ffff;
+	init_config.AccMask =0x7fff0000;
+	init_config.Filter = 0;		//1表示单滤波，0表示双滤波
+	init_config.Mode = 1;		//0表示正常模式，1表示只听模式
+	init_config.Timing0 =0x00;
+	init_config.Timing1 =0x14;
+
+	int m_CANInd = num;
+	CString strTemp1,strTemp2,strTemp3,strTemp4;
+	strTemp1.Format(_T("第%d路CAN初始化失败！"),num+1);
+	strTemp2.Format(_T("第%d路CAN打开失败！"),num+1);
+	strTemp3.Format(_T("第%d路CAN初始化成功！"),num+1);
+	strTemp4.Format(_T("第%d路CAN打开成功！"),num+1);
+	if(m_flagCanConnect==false) 
+	{
+		MessageBox(_T("USBCANII设备未打开，无法连接CAN！"),_T("警告"),MB_OK|MB_ICONQUESTION);
+		return;	//如果设备未连接则直接返回	
+	}
+	if((num==1)&&m_flagCan1Open)	
+	{
+		MessageBox(_T("第1路CAN口连接已经打开"),_T("提示"));
+		this->SetPic(GetDlgItem(IDC_PIC_CAN1),IDB_OK);
+		return;		//如果要打开can1并且can1已经被打开，直接返回
+	}
+	if((num==2)&&m_flagCan2Open)	
+	{
+		MessageBox(_T("第2路CAN口连接已经打开"),_T("提示"));
+		this->SetPic(GetDlgItem(IDC_PIC_CAN2),IDB_OK);
+		return;		//如果要打开can2并且can2已经被打开，直接返回
+	}
+	if(VCI_InitCAN(DEV_TYPE,DEV_IND,m_CANInd,&init_config)!=STATUS_OK)
+	{
+		MessageBox(strTemp1,_T("警告"),MB_OK|MB_ICONQUESTION);
+		return;
+	}
+//	MessageBox(strTemp3,_T("警告"),MB_OK|MB_ICONQUESTION);
+//	m_showList.AddString(strTemp3);
+//	m_showList.SetCurSel(m_showList.GetCount()-1);
+	if(VCI_StartCAN(DEV_TYPE,DEV_IND,num)!=STATUS_OK)
+	{
+		MessageBox(strTemp2,_T("警告"),MB_OK|MB_ICONQUESTION);
+		return;
+	}
+//	MessageBox(strTemp4,_T("警告"),MB_OK|MB_ICONQUESTION);
+//	m_showList.AddString(strTemp4);
+//	m_showList.SetCurSel(m_showList.GetCount()-1);
+	if (num==1)		m_flagCan2Open = true;	//表示CAN1已经打开
+	else if(num==2) m_flagCan2Open = true;	//表示CAN2已经打开
+}
+
+
+
+
+void CMainDlg::OnBnClickedTest()
+{
+	// TODO: Add your control notification handler code here
+
+
+	//每点击一次开始测试，查看此时的RecordDlg是否打开，如果没有打开，则建立并打开一个RecordDlg的非模态对话框。
+	//如果之前已经有一个RecordDlg，则将原来的RecordDlg的内容全部复制出来，根据时间存入到某日志当中。剩下的清除页面重新开始。
+
+	if(NULL == m_recordDlg)
+	{
+		m_recordDlg  = new CRecordDlg;
+		m_recordDlg->Create(IDD_RECORD_DIALOG,this);
+		m_recordDlg->ShowWindow(SW_SHOW);
+		// 将各控件中的数据保存到相应的变量   
+		UpdateData(TRUE); 
+	}
+	else		//RecordDlg已经打开，正在存数据呢，因此先将原有的数据存到txt文件里面。
+	{
+		CString strTime;
+		CTime curTime = CTime::GetCurrentTime();
+		strTime = _T("d:\\");
+		strTime += curTime.Format(_T("%Y-%m-%d %H:%M:%S"));
+		strTime += _T(".txt");			//给新建的文件命名
+		
+		//建立需要保存的日志文件
+		File *fp = NULL;
+		fp = fopen(strTime,"w");
+		if(fp==NULL)
+		{
+			MessageBox(_T("日志文件保存失败！\n","警告");
+			return;
+		}
+		else							//日志建立成功
+		{
+			//提取需要保存的数据存入日志文件当中
+			CString strTemp = _T("");
+			this->GetDlgItemText(IDC_INFO_EDIT,strTemp);
+			
+			fclose(fp);
+		}
+
+		
+
+
+
+
+	}
+	
+
+
+}

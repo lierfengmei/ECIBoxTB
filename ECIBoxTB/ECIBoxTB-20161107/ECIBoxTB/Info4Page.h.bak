@@ -1,0 +1,31 @@
+#pragma once
+#include "afxcmn.h"
+
+
+// CInfo4Page dialog
+
+class CInfo4Page : public CDialogEx
+{
+	DECLARE_DYNAMIC(CInfo4Page)
+
+public:
+	CInfo4Page(CWnd* pParent = NULL);   // standard constructor
+	virtual ~CInfo4Page();
+
+// Dialog Data
+	enum { IDD = IDD_INFO4_PAGE };
+
+protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+
+	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnBnClickedPage4PreButton();
+	//afx_msg void OnBnClickedPage4OkButton();
+	virtual BOOL OnInitDialog();
+	CListCtrl m_2000VoltageList;
+//	CComboBox m_comBox;  
+	afx_msg void OnLbnSelchangeList1();
+	int m_2000VTest[16];
+	afx_msg void OnBnClickedPage4NextButton();
+};

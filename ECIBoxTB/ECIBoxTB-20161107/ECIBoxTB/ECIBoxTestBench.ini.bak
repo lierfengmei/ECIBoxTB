@@ -1,0 +1,115 @@
+
+[ECI Type]
+ECI Type=NewECI
+ECITYPE=OldECI
+[Base Data]
+Number=123343545
+Data=20160125
+Identify=12343
+Serial Number=number214e234
+Product Type=2-ECI
+Product Reference=productNumber123
+Front Panel Letter=423
+Time-Year=2016
+Time-Month=02
+Time-Day=08
+Time=20160208
+Switch Number=1
+[Version Data]
+Software Version=V1.0.0
+ECI Hardware Version=V1.0.0
+ECI Softeare Version=V1.0.1
+TestBench Hardware Version=V2.0.1
+TestBench Softeare Version=V1.0.0
+[Group1 Com Data]
+Com=COM3
+Baud Rate=9600
+Parity=None
+Data Bits=8
+Stop Bits=2
+Buffer=1024
+[Group2 Com Data]
+Com=COM5
+Baud Rate=38400
+Parity=None
+Data Bits=8
+Stop Bits=1
+Buffer=512
+[Test Data]
+Count=3
+Distance1=200
+Distance2=1500
+Distance3=2500
+Distance4=
+Distance5=
+Distance6=
+Distance7=
+Distance8=
+Distance9=
+Distance10=
+
+[Impedance and Phase Data]
+CC200ImpedanceMin=13
+CC200ImpedanceMax=23
+CC200PhaseMin1=200
+CC200PhaseMax1=220
+CC200PhaseMin2=0
+CC200PhaseMax2=30
+CO200ImpedanceMin=4000
+CO200ImpedanceMax=8000
+CO200PhaseMin=0
+CO200PhaseMax=0
+NM200ImpedanceMin=210
+NM200ImpedanceMax=220
+NM200PhaseMin=10
+NM200PhaseMax=15
+
+CC1500ImpedanceMin=70
+CC1500ImpedanceMax=80
+CC1500PhaseMin=30
+CC1500PhaseMax=45
+CO1500ImpedanceMin=237
+CO1500ImpedanceMax=290
+CO1500PhaseMin=190
+CO1500PhaseMax=194
+NM1500ImpedanceMin=160
+NM1500ImpedanceMax=170
+NM1500PhaseMin=10
+NM1500PhaseMax=15
+
+2500CCImpedanceMin=125
+2500CCImpedanceMax=140
+2500CCPhaseMin=32
+2500CCPhaseMax=50
+2500COImpedanceMin=128
+2500COImpedanceMax=140
+2500COPhaseMin=188
+2500COPhaseMax=193
+2500NMImpedanceMin=139
+2500NMImpedanceMax=149
+2500NMPhaseMin=10
+2500NMPhaseMax=15
+
+[Write ECI Data]
+CCParam=WPMCC:0040-020;0050-030;0150-030;0170-030;0300-010
+COParam=WPMCO:0080-210;0090-205;0100-200;0200-205;0220-210
+CableCount=18
+CableParam1=WDT00:9999;0001;0190;
+CableParam2=WDT01:0001;0001;0040;
+CableParam3=WDT02:0980;0001;0190;
+CableParam4=WDT03:0030;0001;0040;
+CableParam5=WDT04:0440;0001;0185;
+CableParam6=WDT05:0050;0001;0040;
+CableParam7=WDT06:0250;0001;0185;
+CableParam8=WDT07:0075;0001;0040;
+CableParam9=WDT08:0180;0001;0185;
+CableParam10=WDT09:0102;0001;0040;
+CableParam11=WDT10:0130;0001;0190;
+CableParam12=WDT11:0130;0001;0040;
+CableParam13=WDT12:0100;0001;0190;
+CableParam14=WDT13:0170;0001;0037;
+CableParam15=WDT14:0085;0001;0198;
+CableParam16=WDT15:0230;0001;0032;
+CableParam17=WDT16:0075;0001;0230;
+CableParam18=WDT17:0285;0001;0025;
+

@@ -1,0 +1,605 @@
+<html>	
+	<head>		
+	<title> ECI盒测试报告 </title>	
+	</head>			
+<body>		
+
+	<font size=6 face="黑体" ><b><center>ECI盒测试报告 </center></b></font>	
+	<font size=5 color="blue"><br><b>通号(北京)工业研究院			 </font>
+
+<center>
+<TABLE border=1 width="50%">
+  <TBODY>
+  <TR>
+    <TH bgColor=Navy ><FONT color=#fbfcc8 size=5>Overall Result:  keyOverallResult
+     </FONT></TH></TR></TBODY></TABLE></center>
+   	<HR width="100%">		
+	<font><u><br>测试信息</u></b></font>	
+		<br>
+		<br>	
+	<font>	
+		<table  border="0" width =60% >	
+			<tr><td> 新老ECI类型:</td>							  <td> keyECIType </td>	</tr>	
+			<tr><td> 测试开始时间:</td>							 	<td> keyTestStartTime </td>	</tr>			
+			<tr><td> 测试人员工号:</td>							 	<td> keyTesterNumber	</td>	</tr>						
+			<tr><td> 产品序列号:</td>									 	<td> keySerialNumber	</td>	</tr>			
+			<tr><td> 产品参考号:	</td>								 	<td> keyReferenceNumber	</td>	</tr>				
+			<tr><td> 前面板显示字母:</td>							 	<td> keyFrontPanelAlphabet		</td>	</tr>			
+	<tr><td>生产日期:	</td>								<td>	keyProductionDate	</td></tr>				
+	<tr><td>确认测试台与电源连接：</td>		<td>		keyTBPower			</td>	</tr>	
+	<tr><td>确认ECI与电源连接:	</td>				<td>	keyECIPower	</td></tr>	
+	</table>	
+			<HR width="100%">				
+	</font>		
+	<br>		
+	<font><u><b> 版本信息 </u></b></font>	
+	<br>			
+	<br>				
+	<font>	
+		<table border="0" width =70%>
+	<tr><td>上位机软件版本信息： </td>				  <td>		keySoftwareVersion  </td></tr>	
+	<tr><td>ECI硬件版本信息：		</td>					<td>		keyECIHardwareVersion		</td></tr>						
+	<tr><td>ECI软件版本信息：		</td>					<td>		keyECISoftwareVersion		</td></tr>	
+	<tr><td>测试工装硬件版本信息： </td>				<td>		keyTBHardwareVersion		</td></tr>	
+	<tr><td>测试工装软件版本信息：	</td>			<td>		keyTBSoftwareVersion	</td></tr>	
+</table>
+	<hr/>
+	<br>
+	<b><u>串口信息</u></b>
+	<br>
+	<br>
+		<table border="0" width =63%>
+	<tr><td>与ECIBox连接串口： 		</td>			<td>		keyECIComNumber	</td></tr>	
+	<tr><td>与测试工装连接串口：	</td>			<td>		keyTBComNumber  </td></tr>	
+	</table>
+	<br>
+	<hr/>	
+	<br>			
+	<b><u>耐压测试结果</u></b>	
+	<center>
+		<br><br>
+		<table border="1" width =60%>
+			<caption><em>表1 2000V下耐压测试结果 </em></caption>
+				<tr bgColor=Plum>
+				<td>测试顺序 </td>
+				<td>耐压测试仪的高压输出端（DC） </td>
+				<td>耐压测试仪的接地端 </td>
+				<td>测试结果 </td>	
+			</tr> 
+			<tr>
+				<td>1</td>
+				<td>SBal1N/P</td>
+				<td>1、SBal2N/P</td>
+				<td> <b> key2000VoltageResult1 </b> </td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>SBal1N/P</td>
+				<td>2、SBal3N/P</td>
+				<td><b>  key2000VoltageResult2  </b></td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td>SBal1N/P</td>
+				<td>3、SBal4N/P</td>
+				<td><b> key2000VoltageResult3 </b></td>
+			</tr>
+			<tr>
+				<td>4</td>
+				<td>SBal1N/P</td>
+				<td>4、All signal of ECI</td>
+				<td><b>  key2000VoltageResult4  </b></td>
+			</tr>			
+			<tr>
+				<td>5</td>
+				<td>SBal1N/P</td>
+				<td>5、C-Shield-Bal</td>
+				<td><b>  key2000VoltageResult5  </b></td>
+			</tr>	
+			<tr>
+				<td>6</td>
+				<td>SBal2N/P</td>
+				<td>1、SBal3N/P</td>
+				<td><b>  key2000VoltageResult6  </b></td>
+			</tr>	
+			<tr>
+				<td>7</td>
+				<td>SBal2N/P</td>
+				<td>2、SBal4N/P</td>
+				<td><b>  key2000VoltageResult7  </b></td>
+			</tr>	
+			<tr>
+				<td>8</td>
+				<td>SBal2N/P</td>
+				<td>3、All signal of ECI</td>
+				<td><b>  key2000VoltageResult8  </b></td>
+			</tr>	
+			<tr>
+				<td>9</td>
+				<td>SBal2N/P</td>
+				<td>4、C-Shield-Bal</td>
+				<td><b>  key2000VoltageResult9  </b></td>
+			</tr>	
+			<tr>
+				<td>10</td>
+				<td>SBal3N/P</td>
+				<td>1、SBal4N/P</td>
+				<td><b>  key2000VoltageResult10  </b></td>
+			</tr>	
+			<tr>
+				<td>11</td>
+				<td>SBal3N/P</td>
+				<td>2、All signal of ECI</td>
+				<td><b>  key2000VoltageResult11  </b></td>
+			</tr>	
+			<tr>
+				<td>12</td>
+				<td>SBal3N/P</td>
+				<td>3、C-Shield-Bal</td>
+				<td><b>  key2000VoltageResult12  </b></td>
+			</tr>	
+			<tr>
+				<td>13</td>
+				<td>SBal4N/P</td>
+				<td>1、All signal of ECI</td>
+				<td><b>  key2000VoltageResult13  </b></td>
+			</tr>	
+			<tr>
+				<td>14</td>
+				<td>SBal4N/P</td>
+				<td>2、C-Shield-Bal</td>
+				<td><b>  key2000VoltageResult14 </b> </td>
+			</tr>	
+			<tr>
+				<td>15</td>
+				<td>All signal of ECI</td>
+				<td>1、C-Shield-Bal</td>
+				<td> <b> key2000VoltageResult15 </b> </td>
+			</tr>					
+			</table>
+		
+	<!--500V下耐压测试(1)-->
+	<br>
+			<table border="1" width =60%>
+			<caption><em>表2 500V下耐压测试结果 </em></caption>
+			<tr bgColor=Plum>
+				<td>测试顺序 </td>
+				<td>耐压测试仪的高压输出端（DC） </td>
+				<td>耐压测试仪的接地端 </td>
+				<td>测试结果 </td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td>SBal1N/P</td>
+				<td>RS232插头 </td>
+				<td><b>  key500VoltageResult1  </b></td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>SBal2N/P</td>
+				<td>RS232插头 </td>
+				<td><b> key500VoltageResult2 </b></td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td>SBal3N/P</td>
+				<td>RS232插头 </td>
+				<td><b> key500VoltageResult3 </b></td>
+			</tr>
+			<tr>
+				<td>4</td>
+				<td>SBal4N/P</td>
+				<td>RS232插头 </td>
+				<td><b> key500VoltageResult4  </b></td>
+			</tr>			
+			<tr>
+				<td>5</td>
+				<td>All signal of ECI</td>
+				<td>RS232插头 </td>
+				<td><b>  key500VoltageResult5  </b></td>
+			</tr>	
+			<tr>
+				<td>6</td>
+				<td>C-Shield-Bal</td>
+				<td>RS232插头 </td>
+				<td><b>  key500VoltageResult6  </b></td>
+			</tr>					
+			</table>
+	</center>
+	<hr/>
+	<br>
+	<b><u>绝缘电阻测试结果 </u></b>
+	<br>
+	<center>
+				<br>
+		<!--绝缘电阻测试结果（1）-->
+				<table border="1" width =60%>
+			<caption><em>表3 绝缘电阻测试结果（1）</em></caption>
+			<tr bgColor=PapayaWhip>
+				<td>测试顺序 </td>
+				<td>电阻表的一端 </td>
+				<td>电阻表的另一端 </td>
+				<td>测试结果 </td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td>SBal1N/P</td>
+				<td>1、SBal2N/P </td>
+				<td><b>  keyResistorResult1-1  </b></td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>SBal1N/P</td>
+				<td>2、SBal3N/P </td>
+				<td><b>  keyResistorResult1-2  </b></td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td>SBal1N/P</td>
+				<td>3、SBal4N/P </td>
+				<td><b>  keyResistorResult1-3 </b> </td>
+			</tr>
+			<tr>
+				<td>4</td>
+				<td>SBal1N/P</td>
+				<td>4、All signal of ECI </td>
+				<td><b>  keyResistorResult1-4  </b></td>
+			</tr>			
+			<tr>
+				<td>5</td>
+				<td>SBal1N/P</td>
+				<td>5、C-Shield-Bal </td>
+				<td><b>  keyResistorResult1-5  </b></td>
+			</tr>	
+			<tr>
+				<td>6</td>
+				<td>SBal1N/P</td>
+				<td>6、RS232接头 </td>
+				<td><b>  keyResistorResult1-6 </b> </td>
+			</tr>					
+			</table>
+
+		<br>
+		<!--绝缘电阻测试结果（2）-->
+				<table border="1" width =60%>
+			<caption><em>表4 绝缘电阻测试结果（2）</em></caption>
+			<tr bgColor=PapayaWhip>
+				<td>测试顺序 </td>
+				<td>电阻表的一端 </td>
+				<td>电阻表的另一端 </td>
+				<td>测试结果 </td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td>SBal2N/P</td>
+				<td>1、SBal3N/P </td>
+				<td><b> keyResistorResult2-1 </b></td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>SBal2N/P</td>
+				<td>2、SBal4N/P </td>
+				<td><b> keyResistorResult2-2 </b></td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td>SBal2N/P</td>
+				<td>3、All signal of ECI </td>
+				<td><b> keyResistorResult2-3 </b></td>
+			</tr>			
+			<tr>
+				<td>4</td>
+				<td>SBal2N/P</td>
+				<td>4、C-Shield-Bal </td>
+				<td><b> keyResistorResult2-4 </b></td>
+			</tr>	
+			<tr>
+				<td>5</td>
+				<td>SBal2N/P</td>
+				<td>5、RS232接头 </td>
+				<td><b> keyResistorResult2-5 </b></td>
+			</tr>					
+			</table>		
+		<br>
+		<!--绝缘电阻测试结果（3）-->
+				<table border="1" width =60%>
+			<caption><em>表5 绝缘电阻测试结果（3）</em></caption>
+			<tr bgColor=PapayaWhip>
+				<td>测试顺序 </td>
+				<td>电阻表的一端 </td>
+				<td>电阻表的另一端 </td>
+				<td>测试结果 </td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td>SBal3N/P</td>
+				<td>1、SBal4N/P </td>
+				<td><b> keyResistorResult3-1 </b></td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>SBal3N/P</td>
+				<td>2、All signal of ECI </td>
+				<td><b> keyResistorResult3-2 </b></td>
+			</tr>			
+			<tr>
+				<td>3</td>
+				<td>SBal3N/P</td>
+				<td>3、C-Shield-Bal </td>
+				<td><b> keyResistorResult3-3 </b></td>
+			</tr>	
+			<tr>
+				<td>4</td>
+				<td>SBal3N/P</td>
+				<td>4、RS232接头 </td>
+				<td><b> keyResistorResult3-4 </b></td>
+			</tr>	
+		</table>				
+		
+		<br>
+		<br>
+		<!--绝缘电阻测试结果（4）-->
+				<table border="1" width =60%>
+			<caption><em>表6 绝缘电阻测试结果（4）</em></caption>
+			<tr bgColor=PapayaWhip>
+				<td>测试顺序 </td>
+				<td>电阻表的一端 </td>
+				<td>电阻表的另一端 </td>
+				<td>测试结果 </td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td>SBal4N/P</td>
+				<td>1、All signal of ECI </td>
+				<td><b> keyResistorResult4-1 </b></td>
+			</tr>			
+			<tr>
+				<td>2</td>
+				<td>SBal4N/P</td>
+				<td>2、C-Shield-Bal </td>
+				<td><b> keyResistorResult4-2 </b></td>
+			</tr>	
+			<tr>
+				<td>3</td>
+				<td>SBal4N/P</td>
+				<td>3、RS232接头 </td>
+				<td><b> keyResistorResult4-3 </b></td>
+			</tr>					
+			</table>		
+	
+		<br>
+		<!--绝缘电阻测试结果（5）-->
+				<table border="1" width =60%>
+			<caption><em>表7 绝缘电阻测试结果（5）</em></caption>
+			<tr bgColor=PapayaWhip>
+				<td>测试顺序 </td>
+				<td>电阻表的一端 </td>
+				<td>电阻表的另一端 </td>
+				<td>测试结果 </td>
+			</tr>	
+			<tr>
+				<td>1</td>
+				<td>All signal of ECI</td>
+				<td>1、C-Shield-Bal </td>
+				<td><b> keyResistorResult5-1 </b></td>
+			</tr>	
+			<tr>
+				<td>2</td>
+				<td>All signal of ECI</td>
+				<td>2、RS232接头 </td>
+				<td><b> keyResistorResult5-2 </b></td>
+			</tr>					
+			</table>		
+			<!--绝缘电阻测试结果（6）-->
+		<br>
+				<table border="1" width =60%>
+			<caption><em>表8 绝缘电阻测试结果（6）</em></caption>
+			<tr bgColor=PapayaWhip>
+				<td>测试顺序 </td>
+				<td>电阻表的一端 </td>
+				<td>电阻表的另一端 </td>
+				<td>测试结果 </td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td>C-Shield-Bal</td>
+				<td>1、RS232接头 </td>
+				<td><b> keyResistorResult6-1 </b></td>
+			</tr>						
+			</table>	
+	
+		</center>
+	
+<hr/>
+	<br>
+	<b><u>导通性测试结果</u></b>
+	<center>
+		<br><br><table border="1" width =60%>
+			<caption><em>表9 导通性测试结果</em></caption>
+			<tr bgColor=LightCyan>
+				<td>序号</td>
+				<td>测试内容</td>
+				<td>通过COM获取的测试结果</td>
+				<td>指示灯指示的参考结果</td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td>测试步骤一</td>
+				<td><b> keyConductCOMCheckResult1 </b></td>
+				<td><b> keyConductManCheckResult1 </b></td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>测试步骤二</td>
+				<td><b> keyConductCOMCheckResult2  </b></td>
+				<td><b> keyConductManCheckResult2 </b></td>
+			</tr>	
+			<tr>
+				<td>3</td>
+				<td>测试步骤三</td>
+				<td><b> keyConductCOMCheckResult3 </b></td>
+				<td><b> keyConductManCheckResult3 </b></td>
+			</tr>	
+			<tr>
+				<td>4</td>
+				<td>测试步骤四</td>
+				<td><b> keyConductCOMCheckResult4 </b></td>
+				<td><b> keyConductManCheckResult4 </b></td>
+			</tr>	
+			</table>
+		</center>	
+	
+	<hr/>				
+
+			
+	<br>
+	<b><u>短路/开路/正常测试结果</u></b>
+	<center>
+		<br><br><table border="1" width =60%>
+			<caption><em>表10 短路/开路/正常测试结果 </em></caption>
+			<tr bgColor=LightSalmon>
+				<td>序号 </td>
+				<td>测试内容 </td>
+				<td>通过COM获取的测试结果 </td>
+				<td>指示灯指示的参考结果 </td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td>短路测试 </td>
+				<td><b> keyCCCOMCheckResult </b></td>
+				<td><b> keyCCManCheckResult </b></td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>开路测试 </td>
+				<td><b> keyCOCOMCheckResult </b></td>
+				<td><b> keyCOManCheckResult </b></td>
+			</tr>	
+			<tr>
+				<td>3</td>
+				<td>正常测试 </td>
+				<td><b> keyNMCOMCheckResult </b></td>
+				<td><b> keyNMManCheckResult </b></td>
+			</tr>	
+			<tr>
+				<td>4</td>
+				<td>有阻抗的开路测试</td>
+				<td><b> keyRCOCOMCheckResult </b></td>
+				<td><b> keyRCOManCheckResult </b></td>
+			</tr>	
+			</table>
+		</center>	
+	
+	<hr/>
+	<br>
+	<b><u>TPS测试结果</u></b>
+	<center>
+		<br><br><table border="1" width =60%>
+			<caption><em>表11 TPS测试结果</em></caption>
+			<tr bgColor=LightSkyBlue>
+				<td>测试内容</td>
+				<td>通过COM获取的测试结果</td>
+				<td>指示灯指示的参考结果</td>
+			</tr>
+			<tr>
+				<td>TPS测试</td>
+				<td><b>  keyTPSCOMCheckResult  </b></td>
+				<td><b>  keyTPSManCheckResult  </b></td>
+			</tr>
+			</table>
+		</center>	
+	
+	<hr/><br>
+	<br>
+	<b><u>发送到ECI的各个命令测试结果</u></b>
+	<center>
+		<br><br><table border="1" width=60%>
+			<caption><em>表12 发送到ECI的各个命令测试结果</em></caption>
+			<tr bgColor=Orange>
+				<td>测试序号</td>
+				<td>发送命令</td> 
+				<td>测试结果</td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td>RES</td>
+				<td><b> keyRESCommandResult </b></td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>VRT</td>
+				<td><b> keyVRTCommandResult </b></td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td>ERT</td>
+				<td><b> keyERTCommandResult </b></td>
+			</tr>
+			<tr>
+				<td>4</td>
+				<td>M16</td>
+				<td><b> keyM16CommandResult </b></td>
+			</tr>
+			<tr>
+				<td>5</td>
+				<td>M01</td>
+				<td><b> keyM01CommandResult </b></td>
+			</tr>
+			<tr>
+				<td>6</td>
+				<td>WST</td>
+				<td><b> keyWSTCommandResult </b></td>
+			</tr>
+			<tr>
+				<td>7</td>
+				<td>LPM</td>
+				<td><b> keyLPMCommandResult </b></td>
+			</tr>
+			<tr>
+				<td>8</td>
+				<td>LDT</td>
+				<td><b>  keyLDTCommandResult </b></td>
+			</tr>
+			<tr>
+				<td>9</td>
+				<td>WPMOO</td>
+				<td><b> keyWPMOOCommandResult </b></td>
+			</tr>
+			<tr>
+				<td>10</td>
+				<td>WPMCC</td>
+				<td><b> keyWPMCCCommandResult </b></td>
+			</tr>
+			<tr>
+				<td>11</td>
+				<td>WPMCO</td>
+				<td><b> keyWPMCOCommandResult </b></td>
+			</tr>
+			<tr>
+				<td>12</td>
+				<td>WDT</td>
+				<td><b> keyWDTCommandResult </b></td>
+			</tr>
+			<tr>
+				<td>13</td>
+				<td>MEM</td>
+				<td><b> keyMEMCommandResult </b></td>
+			</tr>
+			</table>
+		</center>
+		<hr/>
+	<br>
+	<b><u>写入ECI参数</u></b>
+	<br>
+	<br> 写入内容：WPMCC:0040-020;0050-030;0150-030;0170-030;0300-010
+	<br> 写入状态： <b> keyWriteParamResult </b> 
+	<hr/>
+<b><u>综合测试结果</u></b>
+<br>
+<br>测试结束时间：  keyTestEndTime 		
+<br>最终测试结果：	<b> keyTestResult	</b>
+<br><br><br><br></b>签名：		<br>	<br>	<br>	
+<hr/>		
+	</body>	
+	</html>
+	

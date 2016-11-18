@@ -1,0 +1,32 @@
+#pragma once
+
+
+// CInfo6Page dialog
+
+class CInfo6Page : public CDialogEx
+{
+	DECLARE_DYNAMIC(CInfo6Page)
+
+public:
+	CInfo6Page(CWnd* pParent = NULL);   // standard constructor
+	virtual ~CInfo6Page();
+
+// Dialog Data
+	enum { IDD = IDD_INFO6_PAGE };
+
+protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+
+	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnBnClickedPage6OkButton();
+	afx_msg void OnBnClickedPage6PreButton();
+	virtual BOOL OnInitDialog();
+	CListCtrl m_InsulationList1;
+	CListCtrl m_InsulationList2;
+	CListCtrl m_InsulationList3;
+	CListCtrl m_InsulationList4;
+	CListCtrl m_InsulationList5;
+	CListCtrl m_InsulationList6;
+	int m_InsulationTest[7][9];
+};

@@ -1,0 +1,181 @@
+// TestDlg.cpp : implementation file
+
+
+/*
+某测试页面测试步骤：
+1、打开测试页面，disable确定和取消按钮
+2、根据该页面所需要测试的内容，比如2500米短路，给测试工装发送命令
+3、等待测试工装命令返回
+4、Sleep等待稳定
+5、启动Can线程接收 状态
+6、等待人工将4条线路都选完
+7、等待Can线程结束
+8、将Can接收到的数据和人工选择的数据进行处理都得到结果进行存储与 显示
+9、激活“确定”“取消”按钮
+10、翻下一页。
+*/
+
+#include "stdafx.h"
+#include "ECIBoxTB.h"
+#include "TestDlg.h"
+#include "afxdialogex.h"
+
+#include "ControlCAN.h"
+#define DEV_TYPE VCI_USBCAN2
+#define DEV_IND 0
+#pragma comment(lib,"controlcan.lib")
+
+// CTestDlg dialog
+
+IMPLEMENT_DYNAMIC(CTestDlg, CDialogEx)
+
+CTestDlg::CTestDlg(CWnd* pParent /*=NULL*/)
+	: CDialogEx(CTestDlg::IDD, pParent)
+	, m_testTitle(_T(""))
+	//, m_testPageRadio[1](0)
+	//, m_testPageRadio[3](0)
+	//, m_testPageRadio[2](0)
+	//, m_testPageRadio[4](0)
+{
+
+}
+
+CTestDlg::~CTestDlg()
+{
+}
+
+void CTestDlg::DoDataExchange(CDataExchange* pDX)
+{
+	CDialogEx::DoDataExchange(pDX);
+	DDX_Text(pDX, IDC_TEST_TITLE_EDIT, m_testTitle);
+	DDX_Radio(pDX, IDC_RADIO2, m_testPageRadio[1]);
+	DDX_Radio(pDX, IDC_RADIO14, m_testPageRadio[3]);
+	DDX_Radio(pDX, IDC_RADIO8, m_testPageRadio[2]);
+	DDX_Radio(pDX, IDC_RADIO20, m_testPageRadio[4]);
+}
+
+
+BEGIN_MESSAGE_MAP(CTestDlg, CDialogEx)
+	ON_BN_CLICKED(IDOK, &CTestDlg::OnBnClickedOk)
+	ON_BN_CLICKED(IDCANCEL, &CTestDlg::OnBnClickedCancel)
+END_MESSAGE_MAP()
+
+
+// CTestDlg message handlers
+
+
+BOOL CTestDlg::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+	SetWindowPos(&wndTop,820,100,520,530,SWP_SHOWWINDOW);
+	for(int i=1;i<5;i++)
+		m_testPageRadio[i]=-1;
+	UpdateData(FALSE);
+	//todo:其实这个地方是需要EnableWindow（FLASE）的，但是为了调试方便，先暂时撤销掉，记得后续恢复哦~
+//	this->GetDlgItem(IDOK)->EnableWindow(FALSE);
+//	this->GetDlgItem(IDCANCEL)->EnableWindow(FALSE);
+	AfxBeginThread(ReceiveAndProcessData,this);
+	return TRUE;  // return TRUE unless you set the focus to a control
+	// EXCEPTION: OCX Property Pages should return FALSE
+}
+
+
+void CTestDlg::OnBnClickedOk()
+{
+	// TODO: Add your control notification handler code here
+
+	UpdateData(TRUE);
+	//如果还有选项未选择，则弹出警告框，提示有未选择的状态
+
+	for(int i=1;i<5;i++)
+	{
+		if(-1==m_testPageRadio[i])
+		{
+			MessageBox(_T("还有选项没有选择哦(*^__^*) "),_T("警告"),0);
+			return;
+		}
+	}
+	//CDialogEx::OnOK();
+	
+	//CDialog::DestroyWindow();
+	//::SendMessage(AfxGetMainWnd()->m_hWnd,WM_INFO1_NEXT,WM_INFO1_NEXT,0);		//将消息WM_INFO1_NEXT传递给父窗口
+
+	CDialog::DestroyWindow();
+		::SendMessage(AfxGetMainWnd()->m_hWnd,WM_TESTDLG_OK,WM_TESTDLG_OK,0);		//将消息WM_TESTDLG_OK传递给父窗口
+}
+
+
+
+
+UINT CTestDlg::ReceiveAndProcessData(void *param)		//param传入6个ID，传出9个数据
+{
+	VCI_CAN_OBJ frameInfo;
+	VCI_ERR_INFO errInfo;
+	CTestDlg * dlg = (CTestDlg*)param;
+
+	int checkCountMax = 6;		//供检测6个帧的数据。包括1号包1帧，2号包4帧，4号包1帧
+	int checkCount = 0;
+	int len = 0;
+
+	Sleep(1);
+//	if(dlg->m_canConnect == 0)		//如果没有连接，就直接返回
+//	return 0;
+//	if(dlg->m_can1Open==0)		//如果CAN1口沒有打開，就直接返回
+//	return 0;
+
+	while(checkCount<checkCountMax)
+	{ 
+		len = VCI_Receive(DEV_TYPE,DEV_IND,0,&frameInfo,1,200);
+		if(len!=1)
+			continue;
+		if(frameInfo.ID!=dlg->ID[checkCount])			//這裡是設置成了全局變量。或者還可以：
+			continue;									//将需要传入的ID[]和需要传出的data[]都通过*param组成struct传入进来
+		if(frameInfo.DataLen!=8)
+			continue;
+		//处理数据
+		switch(checkCount)
+		{
+		case 0: 
+			dlg->LEU1Status = frameInfo.Data[1]&0x0f;					//處理第1個數據包中的信息
+			dlg->LEU2Status = (frameInfo.Data[1]>>4)&0x0f;
+			dlg->LEU3Status = frameInfo.Data[2]&0x0f;
+			dlg->LEU4Status = (frameInfo.Data[2]>>4)&0x0f;
+			break;
+		case 1:
+			dlg->LEU1Distance = (frameInfo.Data[0]&0x3f)*250;			//第2個數據包frame1中信息
+			break;
+		case 2:
+			dlg->LEU2Distance = (frameInfo.Data[0]&0x3f)*250;			//第2個數據包frame2中信息
+			break;
+		case 3:
+			dlg->LEU3Distance = (frameInfo.Data[0]&0x3f)*250;			//第2個數據包frame3中信息
+			break;
+		case 4:
+			dlg->LEU4Distance = (frameInfo.Data[0]&0x3f)*250;			//第2個數據包frame4中信息
+			break;
+		case 5:
+			dlg->switchNumChange = frameInfo.Data[3]&0x04;				//=1 表示该拨码开关的值已经被改变了  【第4個數據包中信息】
+			break;
+		default:break;
+		}
+		checkCount ++;
+	}
+	dlg->CAN1ThreadEnd = 1;			//线程1结束
+	dlg->GetDlgItem(IDOK)->EnableWindow(FALSE);
+	dlg->GetDlgItem(IDCANCEL)->EnableWindow(FALSE);
+	return 0;
+}
+
+
+void CTestDlg::OnBnClickedCancel()
+{
+	// TODO: Add your control notification handler code here
+	//	CDialogEx::OnCancel();
+		CDialog::DestroyWindow();
+		::SendMessage(AfxGetMainWnd()->m_hWnd,WM_TESTDLG_CANCEL,WM_TESTDLG_CANCEL,0);		//将消息WM_TESTDLG_CANCEL传递给父窗口
+
+	//Every exit is an entry somewhere else.
+}
+
+
+//todo:编程编到了这里！ todo   各类ONOK OnCancel中DestroyWindow添加

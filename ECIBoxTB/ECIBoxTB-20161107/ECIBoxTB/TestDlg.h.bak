@@ -1,0 +1,42 @@
+#pragma once
+
+#define WM_TESTDLG_OK		(WM_USER+110)			//该页面点击确认按钮后触发的消息
+#define	WM_TESTDLG_CANCEL	(WM_USER+111)		//该页面点击取消按钮后出发的消息
+
+ 
+// CTestDlg dialog
+
+class CTestDlg : public CDialogEx
+{
+	DECLARE_DYNAMIC(CTestDlg)
+
+public:
+	CTestDlg(CWnd* pParent = NULL);   // standard constructor
+	virtual ~CTestDlg();
+	void SetTestTitle(LPCTSTR CStrTestTitle){ m_testTitle = CStrTestTitle; }
+	void GetID(UINT InputID[],int length)
+	{
+		for(int i=0;i<length;i++)
+			ID[i]=InputID[i];
+	}
+
+	static UINT ReceiveAndProcessData(void *param);	//线程1接收并处理数据线程
+
+// Dialog Data
+	enum { IDD = IDD_TEST_DIALOG };
+
+protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+
+	DECLARE_MESSAGE_MAP()
+public:
+	CString m_testTitle;
+	virtual BOOL OnInitDialog();
+	afx_msg void OnBnClickedOk();
+	int m_testPageRadio[5];
+
+	UINT ID[10];
+	UINT LEU1Status,LEU2Status,LEU3Status,LEU4Status,LEU1Distance,LEU2Distance,LEU3Distance,LEU4Distance,switchNumChange;
+	int CAN1ThreadEnd;
+
+};
